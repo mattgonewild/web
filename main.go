@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/ory/graceful"
@@ -15,7 +14,6 @@ const (
 	READ_TIMEOUT  = "READ_TIMEOUT"
 	WRITE_TIMEOUT = "WRITE_TIMEOUT"
 	IDLE_TIMEOUT  = "IDLE_TIMEOUT"
-	MAX_CONN      = "MAX_CONN"
 	PORT          = "PORT"
 )
 
@@ -23,7 +21,6 @@ var (
 	readTimeout  time.Duration
 	writeTimeout time.Duration
 	idleTimeout  time.Duration
-	maxConn      int
 	port         string
 	err          error
 	logger       *zap.Logger
@@ -33,8 +30,8 @@ func init() {
 	logger, _ = zap.NewProduction()
 
 	readTimeout, err = time.ParseDuration(os.Getenv(READ_TIMEOUT))
-	if readTimeout <= 0 {
-		readTimeout = 5 * time.Second
+	if readTimeout > 0 {
+		graceful.DefaultReadTimeout = readTimeout
 	}
 	if err != nil {
 		logger.Info(fmt.Sprintf("failed to parse %s env variable", READ_TIMEOUT),
@@ -44,8 +41,8 @@ func init() {
 	}
 
 	writeTimeout, err = time.ParseDuration(os.Getenv(WRITE_TIMEOUT))
-	if writeTimeout <= 0 {
-		writeTimeout = 10 * time.Second
+	if writeTimeout > 0 {
+		graceful.DefaultWriteTimeout = writeTimeout
 	}
 	if err != nil {
 		logger.Info(fmt.Sprintf("failed to parse %s env variable", WRITE_TIMEOUT),
@@ -55,24 +52,13 @@ func init() {
 	}
 
 	idleTimeout, err = time.ParseDuration(os.Getenv(IDLE_TIMEOUT))
-	if idleTimeout <= 0 {
-		idleTimeout = 120 * time.Second
+	if idleTimeout > 0 {
+		graceful.DefaultIdleTimeout = idleTimeout
 	}
 	if err != nil {
 		logger.Info(fmt.Sprintf("failed to parse %s env variable", IDLE_TIMEOUT),
 			zap.String("had", os.Getenv(IDLE_TIMEOUT)),
 			zap.String("want", `a duration such as "300ms", "-1.5h" or "2h45m" -- valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".`),
-		)
-	}
-
-	maxConn, err = strconv.Atoi(os.Getenv(MAX_CONN))
-	if maxConn <= 0 {
-		maxConn = 20
-	}
-	if err != nil {
-		logger.Info(fmt.Sprintf("failed to parse %s env variable", MAX_CONN),
-			zap.String("had", os.Getenv(MAX_CONN)),
-			zap.String("want", `a number with or without a leading "+" or "-" sign`),
 		)
 	}
 
@@ -89,9 +75,9 @@ func main() {
 		Handler: http.HandlerFunc(Router),
 	})
 
-	logger.Info("main: Starting the server")
+	logger.Info("starting the server")
 	if err := graceful.Graceful(server.ListenAndServe, server.Shutdown); err != nil {
-		logger.Info("main: Failed to gracefully shutdown")
+		logger.Info("failed to gracefully shutdown")
 	}
-	logger.Info("main: Server was shutdown gracefully")
+	logger.Info("server was shutdown gracefully")
 }
