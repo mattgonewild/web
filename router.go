@@ -1,13 +1,9 @@
 package main
 
 import (
-	"github.com/fasthttp/router"
-	"github.com/valyala/fasthttp"
+	"net/http"
 )
 
-func Router() fasthttp.RequestHandler {
-	r := router.New()
-	r.Handle(fasthttp.MethodGet, "/", rootHandler)
-
-	return r.Handler
+func Router(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
