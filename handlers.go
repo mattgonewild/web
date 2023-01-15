@@ -1,4 +1,4 @@
-//go:generate qtc -dir=../../pkg/templates
+//go:generate qtc -dir=../../pkg/tmpl
 package main
 
 import (
