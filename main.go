@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"net/http"
 	"os"
@@ -24,6 +25,8 @@ var (
 	port         string
 	err          error
 	logger       *zap.Logger
+	//go:embed static/*
+	flutter embed.FS
 )
 
 func init() {
@@ -72,7 +75,7 @@ func main() {
 	defer logger.Sync()
 	server := graceful.WithDefaults(&http.Server{
 		Addr:    ":" + port,
-		Handler: http.HandlerFunc(Router),
+		Handler: http.FileServer(http.FS(flutter)),
 	})
 
 	logger.Info("starting the server")
