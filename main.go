@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"os"
 	"time"
@@ -73,9 +74,10 @@ func init() {
 
 func main() {
 	defer logger.Sync()
+	flutterRoot, _ := fs.Sub(flutter, "static")
 	server := graceful.WithDefaults(&http.Server{
 		Addr:    ":" + port,
-		Handler: http.FileServer(http.FS(flutter)),
+		Handler: http.FileServer(http.FS(flutterRoot)),
 	})
 
 	logger.Info("starting the server")
