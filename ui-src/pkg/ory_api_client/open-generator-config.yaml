@@ -1,0 +1,7 @@
+# java -jar openapi-generator-cli-6.3.0.jar generate -i ory_openapi_spec.yaml -g dart-dio -c open-generator-config.yaml --enable-post-process-file
+# flutter pub run build_runner build
+pubName: ory_api_client
+pubVersion: 0.0.1
+pubDescription: "Ory API Client"
+pubLibrary: ory_api_client
+

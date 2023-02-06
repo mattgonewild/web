@@ -1,0 +1,16 @@
+# ory_api_client.model.SetProject
+
+## Load the model package
+```dart
+import 'package:ory_api_client/api.dart';
+```
+
+## Properties
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**name** | **String** | The name of the project. | 
+**services** | [**ProjectServices**](ProjectServices.md) |  | 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+
