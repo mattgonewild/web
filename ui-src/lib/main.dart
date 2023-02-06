@@ -45,11 +45,6 @@ class _WebViewState extends State<WebView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navigatorKey,
-      theme: RepositoryProvider.of<UserRepo>(context).themeManager.lightTheme,
-      darkTheme:
-          RepositoryProvider.of<UserRepo>(context).themeManager.darkTheme,
-      themeMode:
-          RepositoryProvider.of<UserRepo>(context).themeManager.themeMode,
       builder: (context, child) {
         return BlocListener<UserBloc, UserState>(
           listenWhen: (previous, current) {

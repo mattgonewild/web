@@ -13,7 +13,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc({required UserRepo userRepo})
       : _userRepo = userRepo,
-        super(const UserState(isLoggedIn: false, themeState: true)) {
+        super(const UserState(isLoggedIn: false, themeState: false)) {
     on<UserChanged>(_onUserChanged);
     on<UserRequestedLogout>(_onUserRequestedLogout);
     on<UserRequestedLogin>(_onUserRequestedLogin);

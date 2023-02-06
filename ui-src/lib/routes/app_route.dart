@@ -46,50 +46,106 @@ class _AppState extends State<App> {
               break;
           }
         },
-        child: BlocBuilder<UserBloc, UserState>(
-          buildWhen: (previous, current) =>
-              previous.themeState != current.themeState,
-          builder: (context, state) => Column(
-            children: [
+        child: Column(children: [
+          Expanded(
+            child: Row(children: const [
               Expanded(
-                  child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'I am terminal.',
-                      style: RepositoryProvider.of<UserRepo>(context)
-                          .themeManager
-                          .getTheme()
-                          .primaryTextTheme
-                          .displayLarge,
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        const Text(
-                            'I am user. Click <alt left> to toggle between light or dark themes.'),
-                        TextButton(
-                          onPressed: () => context.read<UserBloc>().add(
-                              const UserRequestedLogin(AuthProvider.github)),
-                          child: const Text('Login with GitHub'),
-                        ),
-                        TextButton(
-                          onPressed: () => context
-                              .read<UserBloc>()
-                              .add(const UserRequestedLogout()),
-                          child: const Text('Logout'),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              )),
+                child: Terminal(),
+              ),
               Expanded(
-                  child: Text(
-                      'I am viewport. Theme is dark: ${RepositoryProvider.of<UserRepo>(context).themeManager.isDark}'))
-            ],
+                child: UserCard(),
+              ),
+            ]),
           ),
+          Expanded(
+            child: Row(
+              children: const [
+                Expanded(child: Viewport()),
+              ],
+            ),
+          )
+        ]),
+      ),
+    );
+  }
+}
+
+class Terminal extends StatelessWidget {
+  const Terminal({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) => Container(
+        color: Colors.green,
+        child: Column(
+          children: [
+            Text(
+              'I am terminal.',
+              style: RepositoryProvider.of<UserRepo>(context)
+                  .themeManager
+                  .getTheme()
+                  .primaryTextTheme
+                  .displayLarge,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UserCard extends StatelessWidget {
+  const UserCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) => Container(
+        color: Colors.amber,
+        child: Column(
+          children: [
+            const Text(
+                'I am user. Click <alt left> to toggle between light or dark themes.'),
+            TextButton(
+              onPressed: () => context
+                  .read<UserBloc>()
+                  .add(const UserRequestedLogin(AuthProvider.github)),
+              child: const Text('Login with GitHub'),
+            ),
+            TextButton(
+              onPressed: () =>
+                  context.read<UserBloc>().add(const UserRequestedLogout()),
+              child: const Text('Logout'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Viewport extends StatelessWidget {
+  const Viewport({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) => Container(
+        color: Colors.lightBlue,
+        child: Column(
+          children: [
+            Text(
+                'I am viewport. Theme is dark: ${RepositoryProvider.of<UserRepo>(context).themeManager.isDark}'),
+            Text(context
+                .select((UserBloc bloc) => bloc.state.themeState.toString()))
+          ],
         ),
       ),
     );

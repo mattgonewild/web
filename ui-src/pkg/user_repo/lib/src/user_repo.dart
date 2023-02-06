@@ -39,6 +39,7 @@ class UserRepo {
   }
 
   ThemeManager get themeManager => _themeManager;
+
   bool get active => _user.active ?? false;
   String get authenticatedAt =>
       _user.authenticatedAt?.toIso8601String() ?? 'unknown';
@@ -108,6 +109,7 @@ class UserRepo {
           token: logoutFlow.logoutToken);
       if (resp.statusCode == 204) {
         _user = anonymouse;
+        _themeManager.resetThemes();
         _controller.add(_user);
       }
     } catch (e) {
