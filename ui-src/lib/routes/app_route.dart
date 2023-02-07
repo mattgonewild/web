@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repo/user_repo.dart';
 import 'package:mattgonewild.com/user/bloc/user_bloc.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -46,25 +47,15 @@ class _AppState extends State<App> {
               break;
           }
         },
-        child: Column(children: [
-          Expanded(
-            child: Row(children: const [
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: const [
               Expanded(
+                flex: 12,
                 child: Terminal(),
               ),
-              Expanded(
-                child: UserCard(),
-              ),
+              Expanded(child: Prompt()),
             ]),
-          ),
-          Expanded(
-            child: Row(
-              children: const [
-                Expanded(child: Viewport()),
-              ],
-            ),
-          )
-        ]),
       ),
     );
   }
@@ -80,74 +71,59 @@ class Terminal extends StatelessWidget {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) => Container(
         color: Colors.green,
-        child: Column(
-          children: [
-            Text(
-              'I am terminal.',
-              style: RepositoryProvider.of<UserRepo>(context)
-                  .themeManager
-                  .getTheme()
-                  .primaryTextTheme
-                  .displayLarge,
-            ),
-          ],
+        child: Text(
+          'I am terminal.',
+          style: RepositoryProvider.of<UserRepo>(context)
+              .themeManager
+              .getTheme()
+              .primaryTextTheme
+              .displayLarge,
         ),
       ),
     );
   }
 }
 
-class UserCard extends StatelessWidget {
-  const UserCard({
-    super.key,
-  });
+class Prompt extends StatelessWidget {
+  const Prompt({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) => Container(
-        color: Colors.amber,
-        child: Column(
-          children: [
-            const Text(
-                'I am user. Click <alt left> to toggle between light or dark themes.'),
-            TextButton(
-              onPressed: () => context
-                  .read<UserBloc>()
-                  .add(const UserRequestedLogin(AuthProvider.github)),
-              child: const Text('Login with GitHub'),
-            ),
-            TextButton(
-              onPressed: () =>
-                  context.read<UserBloc>().add(const UserRequestedLogout()),
-              child: const Text('Logout'),
-            ),
-          ],
-        ),
-      ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+            child: Container(
+          color: Colors.grey,
+          child: const Text('...@mattgonewild.com'),
+        )),
+        const LoginLogout(),
+      ],
     );
   }
 }
 
-class Viewport extends StatelessWidget {
-  const Viewport({
+class LoginLogout extends StatelessWidget {
+  const LoginLogout({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) => Container(
-        color: Colors.lightBlue,
-        child: Column(
-          children: [
-            Text(
-                'I am viewport. Theme is dark: ${RepositoryProvider.of<UserRepo>(context).themeManager.isDark}'),
-            Text(context
-                .select((UserBloc bloc) => bloc.state.themeState.toString()))
-          ],
-        ),
-      ),
-    );
+        buildWhen: (previous, current) =>
+            previous.isLoggedIn != current.isLoggedIn,
+        builder: (context, state) => !state.isLoggedIn
+            ? SignInButton(Buttons.gitHub,
+                onPressed: () => context
+                    .read<UserBloc>()
+                    .add(const UserRequestedLogin(AuthProvider.github)))
+            : SignInButtonBuilder(
+                text: 'Logout',
+                icon: Icons.logout,
+                onPressed: () =>
+                    context.read<UserBloc>().add(const UserRequestedLogout()),
+                backgroundColor: const Color(0xFF444444),
+              ));
   }
 }
