@@ -10,11 +10,15 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepo _userRepo;
   late StreamSubscription<User> _userRepoSub;
+  late StreamSubscription<String> _errSub;
 
   UserBloc({required UserRepo userRepo})
       : _userRepo = userRepo,
-        super(const UserState(isLoggedIn: false, themeState: false)) {
+        super(
+          const UserState(isLoggedIn: false, themeState: false, error: ''),
+        ) {
     on<UserChanged>(_onUserChanged);
+    on<UserRequestError>(_onUserRequestError);
     on<UserRequestedLogout>(_onUserRequestedLogout);
     on<UserRequestedLogin>(_onUserRequestedLogin);
     on<UserRequestedThemeChange>(_onUserRequestedThemeChange);
@@ -23,12 +27,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         add(UserChanged(newUser));
       },
     );
+    _errSub = _userRepo.error.listen((event) {
+      add(UserRequestError(event));
+    });
     _userRepo.init();
   }
 
   @override
   Future<void> close() {
     _userRepoSub.cancel();
+    _errSub.cancel();
     _userRepo.dispose();
     return super.close();
   }
@@ -38,6 +46,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       return emit(state.copyWith(isLoggedIn: false));
     }
     return emit(state.copyWith(isLoggedIn: true));
+  }
+
+  void _onUserRequestError(UserRequestError event, Emitter<UserState> emit) {
+    emit(state.copyWith(error: event.error));
+    emit(state.copyWith(error: ''));
   }
 
   void _onUserRequestedLogout(

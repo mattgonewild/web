@@ -164,12 +164,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "sign_in_button",
-      "rootUri": "file:///home/bsap/.pub-cache/hosted/pub.dev/sign_in_button-3.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "sky_engine",
       "rootUri": "file:///home/bsap/work/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -284,7 +278,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-02-07T00:30:53.025216Z",
+  "generated": "2023-02-07T06:52:52.525577Z",
   "generator": "pub",
   "generatorVersion": "2.19.0"
 }

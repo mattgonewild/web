@@ -32,10 +32,15 @@ class UserRepo {
   final _themeManager = ThemeManager();
   final _client = _newOryFrontendClient();
   final _controller = StreamController<User>();
+  final _errController = StreamController<String>();
 
   Stream<User> get user async* {
     yield _user;
     yield* _controller.stream;
+  }
+
+  Stream<String> get error async* {
+    yield* _errController.stream;
   }
 
   ThemeManager get themeManager => _themeManager;
@@ -95,7 +100,7 @@ class UserRepo {
           isNewTab: false);
     } catch (e) {
       // ...
-      print(e);
+      _errController.add('$e');
     }
   }
 

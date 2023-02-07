@@ -97,7 +97,7 @@ packages:
     source: sdk
     version: "0.0.0"
   font_awesome_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: font_awesome_flutter
       sha256: "875dbb9ec1ad30d68102019ceb682760d06c72747c1c5b7885781b95f88569cc"
@@ -207,14 +207,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
-  sign_in_button:
-    dependency: "direct main"
-    description:
-      name: sign_in_button
-      sha256: e4f7b828f9388e180622ed25b20c066492c596df89cce4c641c294741b48a081
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
   sky_engine:
     dependency: transitive
     description: flutter

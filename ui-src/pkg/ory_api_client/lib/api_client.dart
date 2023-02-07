@@ -62,6 +62,7 @@ class ApiClient {
         : '';
     final uri = Uri.parse('$basePath$path$queryString');
 
+    Object? _err;
     try {
       // Special case for uploading a single file which isn't a 'multipart/form-data'.
       if (body is MultipartFile &&
@@ -133,9 +134,9 @@ class ApiClient {
           );
       }
     } catch (e) {
-      print(e);
+      _err = e;
     }
-    throw ('shoot.');
+    throw ('$_err');
   }
 
   Future<dynamic> deserializeAsync(

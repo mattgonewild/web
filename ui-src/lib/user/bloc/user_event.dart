@@ -13,6 +13,12 @@ class UserChanged extends UserEvent {
   const UserChanged(this.newUser);
 }
 
+class UserRequestError extends UserEvent {
+  final String error;
+
+  const UserRequestError(this.error);
+}
+
 class UserRequestedLogout extends UserEvent {
   const UserRequestedLogout();
 }
